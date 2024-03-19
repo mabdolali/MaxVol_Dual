@@ -18,7 +18,7 @@ z = cell(num_workers,1);
 for i = 1: num_workers
     z{i}=[randn(r-1,r);ones(1,r)];
 end
-while iter < 30
+while iter < 20
     % find theta
     v1 = v;
     Y = X - v;

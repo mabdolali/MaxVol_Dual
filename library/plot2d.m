@@ -82,7 +82,7 @@ end
 % data points
  if in.plotall == 1
    % plot(X(1,:),X(2,:),c_data,'Color',[0.55 0.55 0.55],'markersize',2), hold on, 
-   plot(X(1,:),X(2,:),c_data,'markersize',5,'HandleVisibility','off'), hold on,  
+   plot(X(1,:),X(2,:),c_data,'markersize',10,'HandleVisibility','off'), hold on,  
  end
 
 % plot vertex
@@ -90,7 +90,7 @@ end
 
 % plot hull
  hullid = convhull(V(1,:),V(2,:));
- plot( V(1,hullid), V(2,hullid), c_hull,'linewidth',3,'HandleVisibility','off')
+ plot( V(1,hullid), V(2,hullid), c_hull,'linewidth',1,'HandleVisibility','off')
 
 % some code to show column order
 if in.showlabel == 1

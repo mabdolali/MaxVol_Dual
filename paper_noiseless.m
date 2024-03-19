@@ -9,7 +9,7 @@ set(0, 'DefaultAxesFontSize', 13);
 set(0, 'DefaultLineLineWidth', 2);
 %% generate data
 
-m = 5; % dimension
+m = 4; % dimension
 r = m; % # of vertices
 
 figure(1);
