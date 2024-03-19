@@ -8,7 +8,7 @@ addpath(genpath('library'));
 set(0, 'DefaultAxesFontSize', 13);
 set(0, 'DefaultLineLineWidth', 2);
 %% Parameters
-SNR = 40;
+SNR = 30;
 %% generate data
 
 m = 4; % dimension
