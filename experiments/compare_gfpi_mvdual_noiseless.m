@@ -1,6 +1,6 @@
 % This code compares facet-based criterion used in GFPI with the
-% volume-based MV-Dual for a simple example in 2 dimensions. When the
-% purity is low, GFPI inds the correct endmembers, whereas the volume-based
+% volume-based criterion in MV-Dual for a simple example in 2 dimensions. When the
+% purity is low, GFPI finds the correct endmembers, whereas the volume-based
 % MV-Dual selects the other enclosing simplex with smaller volume 
 clc
 clear all

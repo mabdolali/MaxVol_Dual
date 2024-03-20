@@ -20,7 +20,7 @@
 % best_theta  :    final Theta at the convergence with maximum volume
 % iter        :    number of iterations till convergence
 % Y           :    projected points in r-1 dimensions
-% C           :    projection matrix in the r-1 dimensions
+% C           :    projection matrix
 
 function [v1, West, best_theta, iter, Y, C] = maxvoldual(X,r,lambda,options)
 if nargin <= 3
