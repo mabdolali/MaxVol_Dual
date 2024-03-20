@@ -1,18 +1,15 @@
-% This code compares the performance of GFPI with Min-Vol, HyperCSI, SNPA and MVIE in the noiseless case for the full rank
-% matrices. For m=r >=7, set the timelimit to 10 for faster convergence.
+% This code compares the performance of MV-Dual with GFPI, Min-Vol, HyperCSI, SNPA and MVIE in the noiseless case for the full rank
+% matrices. 
 clc
 clear all
 close all
-addpath(genpath('library'));
+addpath(genpath('..'));
 %% Setting
 set(0, 'DefaultAxesFontSize', 13);
 set(0, 'DefaultLineLineWidth', 2);
-%% generate data
-
-m = 4; % dimension
+%% generate data & initialization
+m = 3; % dimension
 r = m; % # of vertices
-
-figure(1);
 num_experiments=10; % # of trials
 startp = (1/(r-1))+0.01; % starting purity
 endp = 1; % ending purity
@@ -36,7 +33,7 @@ for purity = range_purity
         Wg = W;
         %% max vol dual
         tic;
-        [v, West, theta, iter] = maxvoldual(M,r,1e2,5);
+        [v, West, theta, iter] = maxvoldual(M,r,1e2);
         result(no,1,ind)=compareWs(Wg, West);
         time(no,1,ind) = toc;
         %% GFPI
@@ -49,7 +46,6 @@ for purity = range_purity
         gfpi_options.outlier = false; % no consideration of outliers
         % gfpi_options.MIPsolver = 'matlab';
         West = GFPI(M,r,gfpi_options);
-        %         West = min(W1,1);
         result(no,2,ind)=compareWs(Wg, West);
         time(no,2,ind) = toc;
         %%

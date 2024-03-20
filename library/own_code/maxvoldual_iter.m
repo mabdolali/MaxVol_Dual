@@ -1,9 +1,20 @@
-function [v, West, theta, iter, Y, C, values1, values2] = maxvoldual_iter(X,r,lambda,Wg,num_workers)
+% This code is very similar to maxvoldual code, it is slightly altered to
+% analyze the convergence behavior at every iteration. 
+% ****** Input ******
+% X      :  the input matrix
+% r      :  the rank of the sought approximation
+% lambda :  the regularization parameter
+% Wg     : ground-truth Ws
+% num_workers: number of parallelized solutions used
+% ****** Output ******
+% values1   :   List of ||v_k-v_{k-1}||/||v_{k-1}|| for each iterations
+% values2   :   List of ||W_est-Wg||/||Wg|| for each iterations
+% Refer to maxvoldual.m for more details
+function [values1, values2] = maxvoldual_iter(X,r,lambda,Wg,num_workers)
 MAX =  max(max(X));
 X = X / MAX ;
 MEAN = mean(X,2);
 v = MEAN;
-W2 = ones(r-1,r);
 iter = 0;
 v1 = ones(size(MEAN));
 v1 = v1 / norm(v1,'fro');
@@ -19,17 +30,12 @@ for i = 1: num_workers
     z{i}=[randn(r-1,r);ones(1,r)];
 end
 while iter < 20
-    % find theta
     v1 = v;
     Y = X - v;
     U = Y*Y';
     [C,~] = eigs(U,r-1);
     Y = C'*Y;
     iter = iter + 1;
-    % find theta
-%     z = cell(num_workers,1);
-%     theta = cell(num_workers,1);
-%     ignore = cell(num_workers,1);
     parfor i=1:num_workers
         [z{i},theta{i},delta{i},flag{i}] = algorithm2_update_theta(Y,r,lambda,z{i});
         ignore{i} = ~flag{i} || any(is_correct(normc(theta{i}))<0.01);
@@ -38,7 +44,7 @@ while iter < 20
     best = 0;
         for i = 1: num_workers
             if ~ignore{i}
-                vol = (det(z{i}))^2-lambda*norm(delta{i},'fro');
+                vol = (det(z{i}))^2;
                 if vol > best
                     best_theta = theta{i};
                     best = vol;

@@ -1,25 +1,19 @@
-% This code performs GFPI on Jasper Ridge database for hyperspectral unmixing
+% This code performs MaxVol-Dual on Jasper Ridge database for hyperspectral unmixing
 clc
 clear all
 close all
 
 %% Load data
-addpath(genpath('library'));
-
+addpath(genpath('..'));
 load('jasperRidge2_R198');
 load('end4');
 W = M;
 M = Y;
 r = 4;
-%% Run Greedy Facet-based Polytope Identification
-% set parameters
-%tic;
-%MAX =  max(max(M));
-%X = M / MAX ; %scale to [0,1]
+%% Run MVDual
 X = M;
 tic;
-[v, W2, theta, iter] = maxvoldual(X,r,0.0015,5); %ghabl = 0.0015
-% [Z,theta,Delta] = maxvol_dual_sparse_noisy(X,r,0.0005);
+[v, W2, theta, iter] = maxvoldual(X,r,0.0015);
 % show results
 W_est = max(W2,0);
 H_est = FGMfcnls(M,W_est);

@@ -1,19 +1,17 @@
-% This code compares the performance of GFPI with Min-Vol, HyperCSI, SNPA and MVIE in the noisy case for the full rank
+% This code compares the performance of MV-Dual with GFPI, Min-Vol, HyperCSI, SNPA and MVIE in the noisy case for the full rank
 % matrices. 
 clc
 clear all
 close all
-addpath(genpath('library'));
-%% Setting
+addpath(genpath('..'));
 set(0, 'DefaultAxesFontSize', 13);
 set(0, 'DefaultLineLineWidth', 2);
-%% Parameters
-SNR = 30;
-%% generate data
 
-m = 4; % dimension
+
+%% generate data & initialization
+m = 3; % dimension
 r = m; % # of endmembers
-
+SNR = 60;
 num_experiments=10; % # of trials
 startp = (1/(r-1)+0.01); % starting purity value
 endp = 1; % ending purity value
@@ -22,6 +20,8 @@ range_purity = startp:step:endp; % define range of purity values
 time = zeros(num_experiments,length(range_purity));
 result = zeros(num_experiments,9, length(range_purity));
 ind = 0;
+mvdual_options.num_workers = 10;
+
 for purity = range_purity
     ind = ind +1;
     for no= 1 : num_experiments
@@ -51,8 +51,7 @@ for purity = range_purity
         elseif SNR ==30
             lambda = 0.5;
         end 
-        
-        [v, West, theta, iter] = maxvoldual(M,r,lambda,10);
+        [v, West, theta, iter] = maxvoldual(M,r,lambda,mvdual_options);
         result(no,1,ind)=compareWs(Wg, West);
         time(no,1,ind) = toc;
         %%
@@ -123,6 +122,7 @@ for purity = range_purity
         time(no,9,ind) = toc;
     end
 end
+% show results
 result2=zeros(size(result,2),length(range_purity));
 result2(:,:) = mean(result,1);
 figure;
@@ -142,7 +142,6 @@ figure;
 plot(range_purity,result2(1,:),'--*',range_purity,result2(2,:),'--O',range_purity,result2(3,:),'--+',range_purity,result2(4,:),'--<',range_purity,result2(5,:),'--d',range_purity,result2(6,:),'-->',range_purity,result2(7,:),'--s',range_purity,result2(8,:),'--x',range_purity,result2(9,:),'--^','markersize',10);
 xlabel('purity');
 ylabel('log time(s)');
-% title(strcat('r=',num2str(r),',m=',num2str(m)));
 legend('MV-Dual','GFPI','min vol \lambda = 0.1','min vol \lambda = 1','min vol \lambda = 5','SNPA','MVIE','HyperCSI','MVES');
 xlim([startp,endp]);
 xticks(range_purity);

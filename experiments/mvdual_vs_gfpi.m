@@ -1,25 +1,17 @@
-% This code compares the performance of GFPI with Min-Vol, HyperCSI, SNPA and MVIE in the noisy case for the full rank
-% matrices.
+% This code compares MV-Dual with GFPI in noisy cases where facet-based
+% approaches might not succeed
 clc
 clear all
 close all
-addpath(genpath('library'));
+addpath(genpath('..'));
 %% Setting
 set(0, 'DefaultAxesFontSize', 13);
 set(0, 'DefaultLineLineWidth', 2);
-%% Parameters
-SNR = 30;
 %% generate data
-
+SNR = 30;
 m = 3; % dimension
 r = m; % # of endmembers
-
-num_experiments=1; % # of trials
-startp = (1/(r-1)+0.01); % starting purity value
-endp = 1; % ending purity value
-step = (endp-startp)/6;
-
-ind = 0;
+rng(59); 
 purity = 0.8;
 Ni1 = 50*ones(r,1); % # of points on each facets
 Ni2 = 50; % # of points within polytope
@@ -46,9 +38,11 @@ elseif SNR ==60
     lambda = 10;
 elseif SNR ==30
     lambda = 0.5;
+else
+    lambda = 1e2;
 end
 
-[v, West, theta, iter] = maxvoldual(M,r,lambda,5);
+[v, West, theta, iter] = maxvoldual(M,r,lambda);
 
 %%
 tic;

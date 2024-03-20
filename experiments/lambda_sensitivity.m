@@ -1,5 +1,6 @@
-% This code compares the performance of GFPI with Min-Vol, HyperCSI, SNPA and MVIE in the noisy case for the full rank
-% matrices. 
+% Sensetivity analysis of MV-Dual vs parameter lambda
+% This code analyzes the performance of MV-Dual with respect to different
+% lambda values
 clc
 clear all
 close all
@@ -43,55 +44,55 @@ for purity = range_purity
         Wg = W;
         %% Max vol dual
         tic;              
-        [v, West, theta, iter] = maxvoldual(M,r,lambda_range(1),5);
+        [v, West, theta, iter] = maxvoldual(M,r,lambda_range(1));
         result(no,1,ind)=compareWs(Wg, West);
         time(no,1,ind) = toc;
         %%
         tic;              
-        [v, West, theta, iter] = maxvoldual(M,r,lambda_range(2),5);
+        [v, West, theta, iter] = maxvoldual(M,r,lambda_range(2));
         result(no,2,ind)=compareWs(Wg, West);
         time(no,2,ind) = toc;
         %%
         tic;      
-        [v, West, theta, iter] = maxvoldual(M,r,lambda_range(3),5);
+        [v, West, theta, iter] = maxvoldual(M,r,lambda_range(3));
         result(no,3,ind)=compareWs(Wg, West);
         time(no,3,ind) = toc;
         %%
         tic;      
-        [v, West, theta, iter] = maxvoldual(M,r,lambda_range(4),5);
+        [v, West, theta, iter] = maxvoldual(M,r,lambda_range(4));
         result(no,4,ind)=compareWs(Wg, West);
         time(no,4,ind) = toc;
 
         %%
         tic;      
-        [v, West, theta, iter] = maxvoldual(M,r,lambda_range(5),5);
+        [v, West, theta, iter] = maxvoldual(M,r,lambda_range(5));
         result(no,5,ind)=compareWs(Wg, West);
         time(no,5,ind) = toc;
 
         %% 
         tic;      
-        [v, West, theta, iter] = maxvoldual(M,r,lambda_range(6),5);
+        [v, West, theta, iter] = maxvoldual(M,r,lambda_range(6));
         result(no,6,ind)=compareWs(Wg, West);
         time(no,6,ind) = toc;
 
         %% 
         tic;      
-        [v, West, theta, iter] = maxvoldual(M,r,lambda_range(7),5);
+        [v, West, theta, iter] = maxvoldual(M,r,lambda_range(7));
         result(no,7,ind)=compareWs(Wg, West);
         time(no,7,ind) = toc;
         %% 
         tic;      
-        [v, West, theta, iter] = maxvoldual(M,r,lambda_range(8),5);
+        [v, West, theta, iter] = maxvoldual(M,r,lambda_range(8));
         result(no,8,ind)=compareWs(Wg, West);
         time(no,8,ind) = toc;
         %% 
         tic;      
-        [v, West, theta, iter] = maxvoldual(M,r,lambda_range(9),5);
+        [v, West, theta, iter] = maxvoldual(M,r,lambda_range(9));
         result(no,9,ind)=compareWs(Wg, West);
         time(no,9,ind) = toc;
         %% 
         tic;      
-        [v, West, theta, iter] = maxvoldual(M,r,lambda_range(10),5);
+        [v, West, theta, iter] = maxvoldual(M,r,lambda_range(10));
         result(no,10,ind)=compareWs(Wg, West);
         time(no,10,ind) = toc;
     end
