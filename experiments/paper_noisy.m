@@ -11,7 +11,7 @@ set(0, 'DefaultLineLineWidth', 2);
 %% generate data & initialization
 m = 3; % dimension
 r = m; % # of endmembers
-SNR = 60;
+SNR = 40;
 num_experiments=10; % # of trials
 startp = (1/(r-1)+0.01); % starting purity value
 endp = 1; % ending purity value

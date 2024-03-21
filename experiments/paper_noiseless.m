@@ -8,7 +8,7 @@ addpath(genpath('..'));
 set(0, 'DefaultAxesFontSize', 13);
 set(0, 'DefaultLineLineWidth', 2);
 %% generate data & initialization
-m = 3; % dimension
+m = 5; % dimension
 r = m; % # of vertices
 num_experiments=10; % # of trials
 startp = (1/(r-1))+0.01; % starting purity

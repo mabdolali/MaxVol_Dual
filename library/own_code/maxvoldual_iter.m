@@ -28,6 +28,8 @@ ignore = cell(num_workers,1);
 delta = cell(num_workers,1);
 flag = cell(num_workers,1);
 z = cell(num_workers,1);
+West = zeros(r,r);
+
 for i = 1: num_workers
     z{i}=[randn(r-1,r);ones(1,r)];
 end
@@ -39,7 +41,7 @@ while iter < 20
     Y = C'*Y;
     iter = iter + 1;
     parfor i=1:num_workers
-        [z{i},theta{i},delta{i},flag{i}] = algorithm2_update_theta(Y,r,lambda,z{i});
+        [z{i},theta{i},delta{i},flag{i}] = algorithm2_update_theta(Y,r,lambda,z{i}-v);
         ignore{i} = ~flag{i} || any(is_correct(normc(theta{i}))<0.01);
     end
     best_theta = [];
@@ -53,20 +55,17 @@ while iter < 20
                 end
             else
                 z{i}=[randn(r-1,r);ones(1,r)];
-            
             end
+            z{i} = z{i} +v1;
         end
         if isempty(best_theta)
             nn = nn + 1;
             [J,~] = SNPA(X,nn*r);
             v = mean(X(:,J),2);
-            Y = X - v;
             %U = Y*Y';
             %[C,~] = eigs(U,r-1);
-            [C,~,~]=svds(Y,r-1);
+            %[C,~,~]=svds(Y,r-1);
             %Y = C'*Y;
-            v1=randn(r,1);
-            West = zeros(r,r);
         else
             % find intersections (W)
             W_e = [];
@@ -85,7 +84,6 @@ while iter < 20
         end
         values1 = [values1 compareWs(Wg,West*MAX)];
         values2 = [values2 norm(v-v1)/norm(v1)];
-        
 end
 
 West = West * MAX;

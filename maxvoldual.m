@@ -13,6 +13,7 @@
 % .epsilon    : the tolerance level for convergence
 %             -default = 1e-2.
 % .num_workers: number of parallelized solutions used
+%             -
 % ****** Output ******
 % 
 % v1          :    estimated center vector
@@ -40,11 +41,12 @@ MAX =  max(max(X));
 X = X / MAX ;
 MEAN = mean(X,2);
 v = MEAN;
-Y = X - v;
+
 if issparse(X)
    [m,n]=size(X); %if X is sparse, compute svds implicitly
    [C,~,~]=svds(@afun,[m,n],r-1); 
 else
+   Y = X - v;
    [C,~,~]=svds(Y,r-1);
 end
 % initialization
@@ -64,8 +66,7 @@ end
 while norm(v-v1,'fro')/norm(v1,'fro') > options.epsilon && iter < options.maxiter 
     % projection
     v1 = v;
-    Y = X - v;
-    Y = C'*Y;
+    Y = C'*X - C'*v;
     iter = iter + 1;
     % parallel computation of Z_i for i = 1: num_workers
     parfor i=1:options.num_workers
@@ -91,14 +92,13 @@ while norm(v-v1,'fro')/norm(v1,'fro') > options.epsilon && iter < options.maxite
             nn = nn + 1;
             [J,~] = SNPA(X,nn*r);
             v = mean(X(:,J),2);
-            Y = X - v;
             if issparse(X)
                [m,n]=size(X); %if X is sparse, compute svds implicitly
                [C,~,~]=svds(@afun,[m,n],r-1); 
             else
+               Y = X - v;
                [C,~,~]=svds(Y,r-1);
             end
-            Y = C'*Y;
             v1=randn(r,1);
         else
       % find intersections (W)
