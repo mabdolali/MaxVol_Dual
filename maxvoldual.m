@@ -41,7 +41,12 @@ X = X / MAX ;
 MEAN = mean(X,2);
 v = MEAN;
 Y = X - v;
-[C,~,~]=svds(Y,r-1);
+if issparse(X)
+   [m,n]=size(X); %if X is sparse, compute svds implicitly
+   [C,~,~]=svds(@afun,[m,n],r-1); 
+else
+   [C,~,~]=svds(Y,r-1);
+end
 % initialization
 iter = 0;
 v1 = ones(size(MEAN));
@@ -60,9 +65,6 @@ while norm(v-v1,'fro')/norm(v1,'fro') > options.epsilon && iter < options.maxite
     % projection
     v1 = v;
     Y = X - v;
-    %U = Y*Y';
-    %[C,~] = eigs(U,r-1);
-    %[C,~,~]=svds(Y,r-1);
     Y = C'*Y;
     iter = iter + 1;
     % parallel computation of Z_i for i = 1: num_workers
@@ -90,9 +92,12 @@ while norm(v-v1,'fro')/norm(v1,'fro') > options.epsilon && iter < options.maxite
             [J,~] = SNPA(X,nn*r);
             v = mean(X(:,J),2);
             Y = X - v;
-%             U = Y*Y';
-%             [C,~] = eigs(U,r-1);
-            [C,~,~]=svds(Y,r-1);
+            if issparse(X)
+               [m,n]=size(X); %if X is sparse, compute svds implicitly
+               [C,~,~]=svds(@afun,[m,n],r-1); 
+            else
+               [C,~,~]=svds(Y,r-1);
+            end
             Y = C'*Y;
             v1=randn(r,1);
         else
@@ -113,4 +118,20 @@ while norm(v-v1,'fro')/norm(v1,'fro') > options.epsilon && iter < options.maxite
         end
 end
 West = West * MAX;
+
+function Ax = afun(x, cond)
+    % function for implicitly computing svds of X-v where X is a sparse
+    % matrix. The function afun satisfies these required conditions:
+    % Afun(x,'notransp') accepts a vector x and returns the product A*x.
+    % Afun(x,'transp') accepts a vector x and returns the product A'*x.
+    
+    if strcmp(cond,'notransp')
+    Ax = X * x - v * x;
+    else
+    Ax = X' * x - v' * x;
+    end
+end
+end
+
+
 
