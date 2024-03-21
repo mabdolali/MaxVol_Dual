@@ -15,6 +15,8 @@ MAX =  max(max(X));
 X = X / MAX ;
 MEAN = mean(X,2);
 v = MEAN;
+Y = X - v;
+[C,~,~]=svds(Y,r-1);
 iter = 0;
 v1 = ones(size(MEAN));
 v1 = v1 / norm(v1,'fro');
@@ -32,8 +34,8 @@ end
 while iter < 20
     v1 = v;
     Y = X - v;
-    U = Y*Y';
-    [C,~] = eigs(U,r-1);
+    %U = Y*Y';
+    %[C,~] = eigs(U,r-1);
     Y = C'*Y;
     iter = iter + 1;
     parfor i=1:num_workers
@@ -59,9 +61,10 @@ while iter < 20
             [J,~] = SNPA(X,nn*r);
             v = mean(X(:,J),2);
             Y = X - v;
-            U = Y*Y';
-            [C,~] = eigs(U,r-1);
-            Y = C'*Y;
+            %U = Y*Y';
+            %[C,~] = eigs(U,r-1);
+            [C,~,~]=svds(Y,r-1);
+            %Y = C'*Y;
             v1=randn(r,1);
             West = zeros(r,r);
         else

@@ -17,7 +17,7 @@
 % 
 % v1          :    estimated center vector
 % West        :    estimated W
-% best_theta  :    final Theta at the convergence with maximum volume
+% best_theta  :    final Theta at the convergence with maximum dual volume
 % iter        :    number of iterations till convergence
 % Y           :    projected points in r-1 dimensions
 % C           :    projection matrix
@@ -40,6 +40,8 @@ MAX =  max(max(X));
 X = X / MAX ;
 MEAN = mean(X,2);
 v = MEAN;
+Y = X - v;
+[C,~,~]=svds(Y,r-1);
 % initialization
 iter = 0;
 v1 = ones(size(MEAN));
@@ -58,8 +60,9 @@ while norm(v-v1,'fro')/norm(v1,'fro') > options.epsilon && iter < options.maxite
     % projection
     v1 = v;
     Y = X - v;
-    U = Y*Y';
-    [C,~] = eigs(U,r-1);
+    %U = Y*Y';
+    %[C,~] = eigs(U,r-1);
+    %[C,~,~]=svds(Y,r-1);
     Y = C'*Y;
     iter = iter + 1;
     % parallel computation of Z_i for i = 1: num_workers
@@ -67,7 +70,7 @@ while norm(v-v1,'fro')/norm(v1,'fro') > options.epsilon && iter < options.maxite
         [z{i},theta{i},delta{i},flag{i}] = algorithm2_update_theta(Y,r,lambda,z{i});
         ignore{i} = ~flag{i} || any(is_correct(normc(theta{i}))<0.01);
     end
-    % select the best candidate till now
+    % select the best candidate till now (maximum dual volume)
     best_theta = [];
     best = 0;
         for i = 1: options.num_workers
@@ -87,8 +90,9 @@ while norm(v-v1,'fro')/norm(v1,'fro') > options.epsilon && iter < options.maxite
             [J,~] = SNPA(X,nn*r);
             v = mean(X(:,J),2);
             Y = X - v;
-            U = Y*Y';
-            [C,~] = eigs(U,r-1);
+%             U = Y*Y';
+%             [C,~] = eigs(U,r-1);
+            [C,~,~]=svds(Y,r-1);
             Y = C'*Y;
             v1=randn(r,1);
         else
