@@ -61,6 +61,8 @@ for i = 1: options.num_workers
     z{i}=[randn(r-1,r);ones(1,r)];
 end
 CtX = C'*X;
+O = ones(r-1,1); 
+cro = nchoosek(1:r,r-1); % for each r-1 facets from r facets
 % main loop
 while norm(v-v1,'fro')/norm(v1,'fro') > options.epsilon && iter < options.maxiter
     % projection
@@ -103,13 +105,11 @@ while norm(v-v1,'fro')/norm(v1,'fro') > options.epsilon && iter < options.maxite
     else
         % find intersections (W)
         W_e = [];
-        cro=nchoosek(1:r,r-1); % for each r-1 facets from r facets
         for i=1:size(cro,1)
-            c=cro(i,:);
+            c = cro(i,:);
             U = best_theta(:,c);
-            O = ones(r-1,1);
-            coef=U' \ O;
-            W_e=[W_e coef];
+            coef = U' \ O;
+            W_e = [W_e coef];
         end
         % update mean vector
         W2 = W_e;
