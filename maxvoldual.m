@@ -78,7 +78,7 @@ while norm(v-v1,'fro')/norm(v1,'fro') > options.epsilon && iter < options.maxite
     best = 0;
         for i = 1: options.num_workers
             if ~ignore{i}
-                vol = (det(z{i}))^2;
+                vol = (det(z{i}))^2-lambda*norm(delta{i},'fro');
                 if vol > best
                     best_theta = theta{i};
                     best = vol;

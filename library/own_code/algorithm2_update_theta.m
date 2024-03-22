@@ -38,7 +38,7 @@ Z_pre = randn(p,r);
 Delta = [];
 H = sparse(p+m+n+m,p+m+n+m);
 H(p+m+1:end-m,p+m+1:end-m)=speye(n);
-while(iter < MAX_ITER && norm(Z_tilde - Z_pre)/norm(Z_pre)>1e-3)
+while(iter < MAX_ITER && norm(Z_tilde - Z_pre,'fro')/norm(Z_pre,'fro')>1e-3)
     Z_pre = Z_tilde;
     iter = iter + 1;
     for i = 1 : r
@@ -48,16 +48,15 @@ while(iter < MAX_ITER && norm(Z_tilde - Z_pre)/norm(Z_pre)>1e-3)
         zz(:,i)=[];
         f = inv_Z(i,:); %form vector f
         f = [f zeros(1,m) zeros(1,n) zeros(1,m)];
-        A = [zeros(n,p) Y' -speye(n) zeros(n,m)];
+        A = [zeros(n,p) Y' -speye(n) zeros(n,m)]; %Y'* Theta <1
         b = ones(n,1);
-        Aeq1 = [eye(p) -eye(p,r-1) zeros(p,n) zeros(p,m)]; %Y'\theta <1
+        Aeq1 = [eye(p) -eye(p,r-1) zeros(p,n) zeros(p,m)]; %Z = [Theta; e^T] 
         beq1 = [zeros(m,1);1];
         Aeq2 = [zeros(m,p) eye(m) zeros(m,n), zz(1:m,:)]; % forcing 0 is in the interior of its convex hull
         beq2 = zeros(m,1);
         [Z_tilde_i,~,e,~] = quadprog(lambda*H,-f',A,b,[Aeq1;Aeq2],[beq1;beq2],[-inf*ones(p+m+n,1); 0.01*ones(m,1)],[]);
         if e<0 && e~=-4 %check whether optimization was successful
             Z_tilde = randn(p,r);
-            i=1;
             flag = 0;
             return
         else %update the column i-th of Z matrix

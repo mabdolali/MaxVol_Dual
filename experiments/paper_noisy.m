@@ -11,7 +11,7 @@ set(0, 'DefaultLineLineWidth', 2);
 %% generate data & initialization
 m = 4; % dimension
 r = m; % # of endmembers
-SNR = 60;
+SNR = 30;
 num_experiments=10; % # of trials
 startp = (1/(r-1)+0.01); % starting purity value
 endp = 1; % ending purity value
@@ -55,28 +55,28 @@ for purity = range_purity
         result(no,1,ind)=compareWs(Wg, West);
         time(no,1,ind) = toc;
         %%
-        tic;
-        if SNR == 40
-            vals = [10,0.5,0.1];
-        elseif SNR ==50
-            vals = [10,0.5,0.05];
-        elseif SNR ==60
-            vals = [100,0.5,0.01];
-        elseif SNR == 30
-            vals = [1,0.5,0.1];
-        end
-        gfpi_options.lambda=vals(1);
-        gfpi_options.eta = vals(2); %margin
-        gfpi_options.gamma=vals(3); %safety gap
-        gfpi_options.no_show = true; % do not show intermediate results
-        gfpi_options.timelimit = 100; % timelimit of cplex
-        gfpi_options.centerstrategy = 'mean'; % center selection strategy
-        gfpi_options.outlier = false; % no consideration of outliers
-        % gfpi_options.MIPsolver = 'matlab';
-        W1 = GFPI(M,r,gfpi_options);
-        West = min(W1,1);
-        result(no,2,ind)=compareWs(Wg, West);
-        time(no,2,ind) = toc;
+%         tic;
+%         if SNR == 40
+%             vals = [10,0.5,0.1];
+%         elseif SNR ==50
+%             vals = [10,0.5,0.05];
+%         elseif SNR ==60
+%             vals = [100,0.5,0.01];
+%         elseif SNR == 30
+%             vals = [1,0.5,0.1];
+%         end
+%         gfpi_options.lambda=vals(1);
+%         gfpi_options.eta = vals(2); %margin
+%         gfpi_options.gamma=vals(3); %safety gap
+%         gfpi_options.no_show = true; % do not show intermediate results
+%         gfpi_options.timelimit = 100; % timelimit of cplex
+%         gfpi_options.centerstrategy = 'mean'; % center selection strategy
+%         gfpi_options.outlier = false; % no consideration of outliers
+%         % gfpi_options.MIPsolver = 'matlab';
+%         W1 = GFPI(M,r,gfpi_options);
+%         West = min(W1,1);
+%         result(no,2,ind)=compareWs(Wg, West);
+%         time(no,2,ind) = toc;
         %%
         tic;
         options.lambda=0.1;
@@ -105,10 +105,10 @@ for purity = range_purity
         time(no,6,ind) = toc;
 
         %% MVIE
-        tic;
-        W4 = MVIE(M,r);
-        result(no,7,ind)=compareWs( Wg, W4 );
-        time(no,7,ind) = toc;
+%         tic;
+%         W4 = MVIE(M,r);
+%         result(no,7,ind)=compareWs( Wg, W4 );
+%         time(no,7,ind) = toc;
 
         %% HyperCSI
         tic;

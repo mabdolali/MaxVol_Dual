@@ -48,7 +48,7 @@ while iter < 20
     best = 0;
         for i = 1: num_workers
             if ~ignore{i}
-                vol = (det(z{i}))^2;
+                vol = (det(z{i}))^2 - lambda *delta{i};
                 if vol > best
                     best_theta = theta{i};
                     best = vol;

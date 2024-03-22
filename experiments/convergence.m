@@ -13,11 +13,11 @@ set(0, 'DefaultLineLineWidth', 2);
 m = 3; % dimension
 r = m; % # of vertices
 num_iter = 20; % # number of considered iterations
-num_experiments=10; % # of trials, 50 in paper
+num_experiments=100; % # of trials
 purity = 0.76;
 num_workers = 5;
 for no= 1 : num_experiments
-    Ni1 = 30*ones(r,1);% use [500;100;30] for imbalanced case; # of data points on each facet
+    Ni1 = 30*ones(r,1);%[500;100;30];%% use [500;100;30] for imbalanced case; # of data points on each facet
     Ni2 = 10; % # of data points within polytope
     while(true)
         [M, W, ~] = gendata_rnd(m,r,purity,Ni1,Ni2); %generating the data points
