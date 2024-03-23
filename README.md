@@ -17,9 +17,9 @@ This code solves the maxvol-dual problem
 
   
 ### ****** Output ******
-- v1          :    estimated center vector
-- West        :    estimated W
-- best_theta  :    final Theta at the convergence with maximum dual volume
-- iter        :    number of iterations till convergence
-- Y           :    projected points in r-1 dimensions
-- C           :    projection matrix
+- v1                :    estimated center vector
+- W_est             :    estimated W
+- theta ($\Theta$)  :    final Theta at the convergence with maximum dual volume
+- iter              :    number of iterations till convergence
+- Y                 :    projected points in r-1 dimensions
+- C                 :    projection matrix
