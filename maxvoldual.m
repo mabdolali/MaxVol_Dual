@@ -98,7 +98,6 @@ while norm(v-v1,'fro')/norm(v1,'fro') > options.epsilon && iter < options.maxite
         else
             z{i}=[randn(r-1,r);ones(1,r)];
         end
-    end
     % if all candidates failed, use alternative initialization
     if isempty(best_theta)
         nn = nn + 1;
