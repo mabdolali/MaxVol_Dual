@@ -41,14 +41,14 @@ while iter < 20
     Y = C'*Y;
     iter = iter + 1;
     parfor i=1:num_workers
-        [z{i},theta{i},delta{i},flag{i}] = algorithm2_update_theta(Y,r,lambda,z{i});
+        [z{i},theta{i},delta{i},flag{i}] = algorithm2_update_theta(Y,r,lambda,z{i}-v);
         ignore{i} = ~flag{i} || any(is_correct(normc(theta{i}))<0.01);
     end
     best_theta = [];
     best = 0;
         for i = 1: num_workers
             if ~ignore{i}
-                vol = (det(z{i}))^2;
+                vol = (det(z{i}))^2-lambda*;
                 if vol > best
                     best_theta = theta{i};
                     best = vol;
@@ -56,11 +56,16 @@ while iter < 20
             else
                 z{i}=[randn(r-1,r);ones(1,r)];
             end
+            z{i} = z{i} +v1;
         end
         if isempty(best_theta)
             nn = nn + 1;
             [J,~] = SNPA(X,nn*r);
             v = mean(X(:,J),2);
+            %U = Y*Y';
+            %[C,~] = eigs(U,r-1);
+            %[C,~,~]=svds(Y,r-1);
+            %Y = C'*Y;
         else
             % find intersections (W)
             W_e = [];

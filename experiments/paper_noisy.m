@@ -9,7 +9,7 @@ set(0, 'DefaultLineLineWidth', 2);
 
 
 %% generate data & initialization
-m = 4; % dimension
+m = 3; % dimension
 r = m; % # of endmembers
 SNR = 30;
 num_experiments=10; % # of trials
