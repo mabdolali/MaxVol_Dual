@@ -120,7 +120,7 @@ end
 West = West * MAX;
 
 function Ax = afun(x, cond)
-    % function for implicitly computing svds of X-v where X is a sparse
+    % function for implicitly computing svds of X-v*e^T where X is a sparse
     % matrix. The function afun satisfies these required conditions:
     % Afun(x,'notransp') accepts a vector x and returns the product A*x.
     % Afun(x,'transp') accepts a vector x and returns the product A'*x.
@@ -128,7 +128,7 @@ function Ax = afun(x, cond)
     if strcmp(cond,'notransp')
         Ax = X * x - v * sum(x);
     else
-        Ax = X' * x - v' * sum(x);
+        Ax = X' * x - v' * x;
     end
 end
 end
