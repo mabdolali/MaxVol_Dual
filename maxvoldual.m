@@ -126,9 +126,9 @@ function Ax = afun(x, cond)
     % Afun(x,'transp') accepts a vector x and returns the product A'*x.
 
     if strcmp(cond,'notransp')
-        Ax = X * x - v * x;
+        Ax = X * x - v * sum(x);
     else
-        Ax = X' * x - v' * x;
+        Ax = X' * x - v' * sum(x);
     end
 end
 end
