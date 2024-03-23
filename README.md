@@ -1,8 +1,9 @@
 # MaxVol_Dual
  
 This code solves the maxvol-dual problem
-       $max_{Z,\Theta,\Delta} det(Z)^2 - \lambda ||\Delta||^2$
-                 $\text{such that } Z = [\Theta; e^\top] \text{ and } Y^\top \Theta <= 1 + \Delta$
+
+       $$max_{Z,\Theta,\Delta} det(Z)^2 - \lambda ||\Delta||^2 \\
+                 \text{such that } Z = [\Theta; e^\top] \text{ and } Y^\top \Theta <= 1 + \Delta$$
 
                  
 ### ****** Input ******
