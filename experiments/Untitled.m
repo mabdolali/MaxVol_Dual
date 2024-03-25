@@ -6,10 +6,11 @@ close all
 %% Load data
 addpath(genpath('..'));
 load('Urban');
-r = 5;
+r = 4;
 %% Run MVDual
 tic;
-[v, W2, theta, iter] = maxvoldual(X,r,0.0015);
+options.num_workers = 1;
+[v, W2, theta, iter] = maxvoldual(X,r,0.0001);
 % show results
 W_est = max(W2,0);
 % sprintf("MRSA is %.2f", mrsa(W, matchCol(W_est,W)))
@@ -31,4 +32,4 @@ time = toc
 % grid on;
 % show 2d projection of data and convex hull
 in.plotall = 1;
-in.plotspec = {'k.','rx','r--'};figure;plot2d(M,W_est,in)
+in.plotspec = {'k.','rx','r--'};figure;plot2d(X,W_est,in)

@@ -24,7 +24,7 @@ if nargin <= 4
     options = [];
 end
 if ~isfield(options,'maxiter')
-    options.maxiter = 100; 
+    options.maxiter = 5; 
 end
 if ~isfield(options,'timelimit')
     options.timelimit = 60; 

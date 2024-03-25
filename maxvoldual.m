@@ -13,8 +13,10 @@
 % .epsilon    : the tolerance level for convergence
 %             -default = 1e-2.
 % .num_workers: number of parallelized solutions used
+%             -default = 5.
 % .timelimit  : maximum alloted time for the outer loops
-%             -
+%             -default = 300.
+% 
 % ****** Output ******
 %
 % v1          :    estimated center vector
@@ -25,7 +27,8 @@
 % C           :    projection matrix
 
 function [v1, West, best_theta, iter, Y, C] = maxvoldual(X,r,lambda,options)
-cputime0 = cputime;
+%cputime0 = cputime; !!! 
+tic; % !!! 
 if nargin <= 3
     options = [];
 end
@@ -45,7 +48,6 @@ end
 MAX =  max(max(X));
 X = X / MAX ;
 v = mean(X,2);
-
 if issparse(X)
     [m,n]=size(X); %if X is sparse, compute svds implicitly
     [C,~,~]=svds(@afun,[m,n],r-1);
@@ -70,10 +72,11 @@ O = ones(r-1,1);
 cro = nchoosek(1:r,r-1); % for each r-1 facets from r facets
 outeriter = 1;
 % main loop
+West = []; % !!! otherwise could be not assigned
 while norm(v-v1,'fro')/norm(v1,'fro') > options.epsilon ...
         && iter < options.maxiter ...
-        && cputime-cputime0 <= options.timelimit
-    fprintf('Outer iteration %1.0d started',outeriter);
+        && toc <= options.timelimit  
+    fprintf('Outer iteration %1.0d started. \n',outeriter); 
     % projection
     v1 = v;
     Y = CtX - C'*v;
@@ -81,14 +84,14 @@ while norm(v-v1,'fro')/norm(v1,'fro') > options.epsilon ...
     % parallel computation of Z_i for i = 1: num_workers
     parfor i=1:options.num_workers
         [z{i},theta{i},delta{i},flag{i}] = algorithm2_update_theta(Y,r,lambda,z{i});
-        ignore{i} = ~flag{i} || any(is_correct(normc(theta{i}))<0.01);
+        ignore{i} = ~flag{i} || any(is_correct(normc(theta{i}))<0.01); 
     end
     % select the best candidate till now (maximum dual volume)
-    best_theta = [];
-    best = 0;
+    best_theta = []; 
+    best = -Inf; 
     for i = 1: options.num_workers
         if ~ignore{i}
-            vol = (det(z{i}))^2-lambda*norm(delta{i},'fro');
+            vol = (det(z{i}))^2 - lambda*sum(delta{i}(:).^2); % !!! correct formula 
             if vol > best
                 best_theta = theta{i};
                 best = vol;
@@ -127,17 +130,17 @@ while norm(v-v1,'fro')/norm(v1,'fro') > options.epsilon ...
     outeriter = outeriter + 1;
 end
 West = West * MAX;
-    function Ax = afun(x, cond)
-        % function for implicitly computing svds of X-v*e^T where X is a sparse
-        % matrix. The function afun satisfies these required conditions:
-        % Afun(x,'notransp') accepts a vector x and returns the product A*x.
-        % Afun(x,'transp') accepts a vector x and returns the product A'*x.
-        
-        if strcmp(cond,'notransp')
-            Ax = X * x - v * sum(x);
-        else
-            Ax = X' * x - v' * x;
-        end
+
+function Ax = afun(x, cond)
+    % function for implicitly computing svds of X-v*e^T where X is a sparse
+    % matrix. The function afun satisfies these required conditions:
+    % Afun(x,'notransp') accepts a vector x and returns the product A*x.
+    % Afun(x,'transp') accepts a vector x and returns the product A'*x.
+
+    if strcmp(cond,'notransp')
+        Ax = X * x - v * sum(x);
+    else
+        Ax = X' * x - v' * x;
     end
 end
-
+end

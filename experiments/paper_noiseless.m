@@ -8,7 +8,7 @@ addpath(genpath('..'));
 set(0, 'DefaultAxesFontSize', 13);
 set(0, 'DefaultLineLineWidth', 2);
 %% generate data & initialization
-m = 5; % dimension
+m = 3; % dimension
 r = m; % # of vertices
 num_experiments=10; % # of trials
 startp = (1/(r-1))+0.01; % starting purity
@@ -103,11 +103,11 @@ xticklabels(range_purity);
 set(gca,'xticklabel',num2str(get(gca,'xtick')','%.2f'))
 %%
 result2=zeros(size(time,2),length(range_purity));
-result2(:,:) = mean(log2(time),1);
+result2(:,:) = mean(time,1);
 figure;
-plot(range_purity,result2(1,:),'--*',range_purity,result2(2,:),'--O',range_purity,result2(3,:),'--+',range_purity,result2(4,:),'--<',range_purity,result2(5,:),'--d',range_purity,result2(6,:),'-->',range_purity,result2(7,:),'--s',range_purity,result2(8,:),'--x',range_purity,result2(9,:),'--^','markersize',10);
+semilogy(range_purity,result2(1,:),'--*',range_purity,result2(2,:),'--O',range_purity,result2(3,:),'--+',range_purity,result2(4,:),'--<',range_purity,result2(5,:),'--d',range_purity,result2(6,:),'-->',range_purity,result2(7,:),'--s',range_purity,result2(8,:),'--x',range_purity,result2(9,:),'--^','markersize',10);
 xlabel('purity');
-ylabel('log time(s)');
+ylabel('time(s)');
 % title(strcat('r=',num2str(r),',m=',num2str(m)));
 legend('MV-Dual','GFPI','min vol \lambda = 0.1','min vol \lambda = 1','min vol \lambda = 5','SNPA','MVIE','HyperCSI','MVES');
 xlim([startp,endp]);
