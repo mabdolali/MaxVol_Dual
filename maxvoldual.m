@@ -68,10 +68,12 @@ end
 CtX = C'*X;
 O = ones(r-1,1); 
 cro = nchoosek(1:r,r-1); % for each r-1 facets from r facets
+outeriter = 1; 
 % main loop
 while norm(v-v1,'fro')/norm(v1,'fro') > options.epsilon ... 
         && iter < options.maxiter ... 
         && cputime-cputime0 <= options.timelimit 
+    fprintf('Outer iteration %1.0d started',outeriter); 
     % projection
     v1 = v;
     Y = CtX - C'*v;
@@ -133,6 +135,7 @@ while norm(v-v1,'fro')/norm(v1,'fro') > options.epsilon ...
         West = C * W_e + v;
         v = mean(West,2);
     end
+    outeriter = outeriter + 1; 
 end
 West = West * MAX;
 
