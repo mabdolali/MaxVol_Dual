@@ -13,7 +13,6 @@
 % .epsilon    : the tolerance level for convergence
 %             -default = 1e-2.
 % .num_workers: number of parallelized solutions used
-% .timelimit  : maximum alloted time for the outer loops
 %             -
 % ****** Output ******
 %
@@ -25,7 +24,6 @@
 % C           :    projection matrix
 
 function [v1, West, best_theta, iter, Y, C] = maxvoldual(X,r,lambda,options)
-cputime0 = cputime; 
 if nargin <= 3
     options = [];
 end
@@ -37,9 +35,6 @@ if ~isfield(options,'epsilon')
 end
 if ~isfield(options,'num_workers')
     options.num_workers = 5;
-end
-if ~isfield(options,'timelimit')
-    options.timelimit = 300;
 end
 % pre-processing
 MAX =  max(max(X));
@@ -68,12 +63,8 @@ end
 CtX = C'*X;
 O = ones(r-1,1); 
 cro = nchoosek(1:r,r-1); % for each r-1 facets from r facets
-outeriter = 1; 
 % main loop
-while norm(v-v1,'fro')/norm(v1,'fro') > options.epsilon ... 
-        && iter < options.maxiter ... 
-        && cputime-cputime0 <= options.timelimit 
-    fprintf('Outer iteration %1.0d started',outeriter); 
+while norm(v-v1,'fro')/norm(v1,'fro') > options.epsilon && iter < options.maxiter
     % projection
     v1 = v;
     Y = CtX - C'*v;
@@ -126,7 +117,6 @@ while norm(v-v1,'fro')/norm(v1,'fro') > options.epsilon ...
         West = C * W_e + v;
         v = mean(West,2);
     end
-    outeriter = outeriter + 1; 
 end
 West = West * MAX;
 
