@@ -1,9 +1,19 @@
-function [Z_tilde,flag] = initial_theta(Y,r,lambda0,Z_tilde)
+function [Z_tilde,flag] = initial_theta(Y,r,lambda0,Z_tilde,options)
+
+cputime0 = cputime; 
+if nargin <= 4
+    options = [];
+end
+if ~isfield(options,'maxiter')
+    options.maxiter = 100; 
+end
+if ~isfield(options,'timelimit')
+    options.timelimit = 60; 
+end
 n = size(Y,2);
 p = r;
 m = r-1;
 Theta =zeros(r-1,r);
-MAX_ITER = 100;
 Z_0 = Z_tilde;
 iter = 1;
 Z_pre = randn(p,r);
@@ -13,7 +23,9 @@ H = sparse(p+m+n+m,p+m+n+m);
 H(p+m+1:end-m,p+m+1:end-m)=speye(n);
 lambda = lambda0;
 
-while(iter < MAX_ITER && norm(Z_tilde - Z_pre)/norm(Z_pre)>1e-2)
+while iter < options.maxiter ... 
+        && norm(Z_tilde - Z_pre,'fro')/norm(Z_pre,'fro')>1e-2 ...
+        && cputime-cputime0 <= options.timelimit 
     Z_pre = Z_tilde;
     iter = iter + 1;
     for i = 1 : r
@@ -28,7 +40,8 @@ while(iter < MAX_ITER && norm(Z_tilde - Z_pre)/norm(Z_pre)>1e-2)
         beq1 = [zeros(m,1);1];
         Aeq2 = [zeros(m,p) eye(m) zeros(m,n), zz(1:m,:)];
         beq2 = zeros(m,1);
-        [Z_tilde_i,~,e,~] = quadprog(lambda*H,-f',A,b,[Aeq1;Aeq2],[beq1;beq2],[-inf*ones(p+m+n,1); 0.01*ones(m,1)],[]);
+        opts = optimoptions('quadprog','Display','none'); 
+        [Z_tilde_i,~,e,~] = quadprog(lambda*H,-f',A,b,[Aeq1;Aeq2],[beq1;beq2],[-inf*ones(p+m+n,1); 0.01*ones(m,1)],[],[],opts);
         if e<0 && e~=-4
             Z_tilde = zeros(p,r);
             i=1;

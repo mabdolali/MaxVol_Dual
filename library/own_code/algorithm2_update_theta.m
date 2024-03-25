@@ -8,6 +8,7 @@
 % r      :  the rank of the sought approximation
 % lambda0:  the regularization parameter
 % Z_tilde: initial Z matrix
+% options.maxiter & timelimit
 % ****** Output ******
 % 
 % Z_tilde     :    estimated Z matrix
@@ -16,16 +17,25 @@
 % Delta       :    estimated noise matrix
 % flag        : a boolean flag which indicates whether the optimization was
 % successful or not
-function [Z_tilde,Theta,Delta,flag] = algorithm2_update_theta(Y,r,lambda0,Z_tilde)
+function [Z_tilde,Theta,Delta,flag] = algorithm2_update_theta(Y,r,lambda0,Z_tilde,options)
 
+cputime0 = cputime; 
+if nargin <= 4
+    options = [];
+end
+if ~isfield(options,'maxiter')
+    options.maxiter = 100; 
+end
+if ~isfield(options,'timelimit')
+    options.timelimit = 60; 
+end
 % initialization
 n = size(Y,2);
 p = r;
 m = r-1;
 Theta =zeros(r-1,r);
-MAX_ITER = 100;
 % initialize Z (and theta)
-[Z_tilde,flag] = initial_theta(Y,r,lambda0,Z_tilde);
+[Z_tilde,flag] = initial_theta(Y,r,lambda0,Z_tilde,options);
 % checking whether initial optimization problem was successful
 if ~flag
     Theta = randn(r-1,r);
@@ -38,7 +48,9 @@ Z_pre = randn(p,r);
 Delta = [];
 H = sparse(p+m+n+m,p+m+n+m);
 H(p+m+1:end-m,p+m+1:end-m)=speye(n);
-while(iter < MAX_ITER && norm(Z_tilde - Z_pre,'fro')/norm(Z_pre,'fro')>1e-3)
+while iter < options.maxiter ... 
+        && norm(Z_tilde - Z_pre,'fro')/norm(Z_pre,'fro')>1e-3 ... 
+        && cputime-cputime0 <= options.timelimit 
     Z_pre = Z_tilde;
     iter = iter + 1;
     for i = 1 : r
@@ -54,13 +66,14 @@ while(iter < MAX_ITER && norm(Z_tilde - Z_pre,'fro')/norm(Z_pre,'fro')>1e-3)
         beq1 = [zeros(m,1);1];
         Aeq2 = [zeros(m,p) eye(m) zeros(m,n), zz(1:m,:)]; % forcing 0 is in the interior of its convex hull
         beq2 = zeros(m,1);
-        [Z_tilde_i,~,e,~] = quadprog(lambda*H,-f',A,b,[Aeq1;Aeq2],[beq1;beq2],[-inf*ones(p+m+n,1); 0.01*ones(m,1)],[]);
+        opts = optimoptions('quadprog','Display','none'); 
+        [Z_tilde_i,~,e,~] = quadprog(lambda*H,-f',A,b,[Aeq1;Aeq2],[beq1;beq2],[-inf*ones(p+m+n,1); 0.01*ones(m,1)],[],[],opts);
         if e<0 && e~=-4 %check whether optimization was successful
             Z_tilde = randn(p,r);
             flag = 0;
             return
         else %update the column i-th of Z matrix
-            %Z_0 = Z_tilde;
+            Z_0 = Z_tilde;
             Z_tilde(:,i) = Z_tilde_i(1:p);
             theta = Z_tilde_i(p+1:p+m);
             Delta(:,i) = Z_tilde_i(p+m+1:end-m);
