@@ -13,7 +13,7 @@
 % .epsilon    : the tolerance level for convergence
 %             -default = 1e-2.
 % .num_workers: number of parallelized solutions used
-%             -
+%             -default = 5.
 % ****** Output ******
 %
 % v1          :    estimated center vector
