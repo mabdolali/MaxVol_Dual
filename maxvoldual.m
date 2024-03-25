@@ -88,7 +88,7 @@ while norm(v-v1,'fro')/norm(v1,'fro') > options.epsilon ...
     best = 0;
         for i = 1: options.num_workers
             if ~ignore{i}
-                vol = (det(z{i}))^2;
+                vol = (det(z{i}))^2 - lambda*sum(delta{i}(:).^2); %vol = (det(z{i}))^2;
                 if vol > best
                     best_theta = theta{i};
                     best = vol;
@@ -97,15 +97,6 @@ while norm(v-v1,'fro')/norm(v1,'fro') > options.epsilon ...
                 z{i}=[randn(r-1,r);ones(1,r)];
             end
            
-        end
-     % if all candidates failed, use alternative initialization
-        if isempty(best_theta)
-            nn = nn + 1;
-            [J,~] = SNPA(X,nn*r);
-            v = mean(X(:,J),2);
-            v1=randn(r,1);
-        else
-            z{i}=[randn(r-1,r);ones(1,r)];
         end
     % if all candidates failed, use alternative initialization
     if isempty(best_theta)

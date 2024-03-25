@@ -73,7 +73,6 @@ while iter < options.maxiter ...
             flag = 0;
             return
         else %update the column i-th of Z matrix
-            Z_0 = Z_tilde;
             Z_tilde(:,i) = Z_tilde_i(1:p);
             theta = Z_tilde_i(p+1:p+m);
             Delta(:,i) = Z_tilde_i(p+m+1:end-m);
