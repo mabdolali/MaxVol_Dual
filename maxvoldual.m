@@ -46,26 +46,26 @@ if ~isfield(options,'timelimit')
 end
 % pre-processing
 MAX =  max(max(X));
-X = X / MAX ;
+X = X / MAX ; %scaling for numerical stability
 v = mean(X,2);
 if issparse(X)
     [m,n]=size(X); %if X is sparse, compute svds implicitly
     [C,~,~]=svds(@afun,[m,n],r-1);
 else
-    Y = X - v;
+    Y = X - v; %otherwise compute svds normally
     [C,~,~]=svds(Y,r-1);
 end
 % initialization
-iter = 0;
-v1 = 0;
-nn = 0;
-theta = cell(options.num_workers,1);
-ignore = cell(options.num_workers,1);
-delta = cell(options.num_workers,1);
-flag = cell(options.num_workers,1);
-z = cell(options.num_workers,1);
+iter = 0; %initializing iteration counter
+v1 = 0; % initializing v_{k-1} (keeps center vector of previous iteration)
+nn = 0; % a counter for # of endmembers in SNPA initalization if avergae initialization goes wrong
+theta = cell(options.num_workers,1); % Theta_i for i=1,...mnum_workers 
+ignore = cell(options.num_workers,1); % ignore_i for i=1,...mnum_workers (ignoring i-th solution or not)
+delta = cell(options.num_workers,1); % delta_i for i=1,...mnum_workers (estimated noise matrix)
+flag = cell(options.num_workers,1); % flag_i for i=1,...mnum_workers (optimization was successful or not)
+z = cell(options.num_workers,1); % z_i for i=1,...mnum_workers
 for i = 1: options.num_workers
-    z{i}=[randn(r-1,r);ones(1,r)];
+    z{i}=[randn(r-1,r);ones(1,r)]; %initialize z_i
 end
 CtX = C'*X;
 O = ones(r-1,1);
@@ -83,7 +83,7 @@ while norm(v-v1,'fro')/norm(v1,'fro') > options.epsilon ...
     iter = iter + 1;
     % parallel computation of Z_i for i = 1: num_workers
     parfor i=1:options.num_workers
-        [z{i},theta{i},delta{i},flag{i}] = algorithm2_update_theta(Y,r,lambda,z{i}); %solves a QP 
+        [z{i},theta{i},delta{i},flag{i}] = algorithm2_update_theta(Y,r,lambda,z{i}); %solves a QP (refer to the paper for more info)
         ignore{i} = ~flag{i} || any(is_correct(normc(theta{i}))<0.01); % check if optimization was successful
     end
     % select the best candidate till now (maximum dual volume)
