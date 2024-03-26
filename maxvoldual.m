@@ -58,12 +58,12 @@ end
 % initialization
 iter = 0; %initializing iteration counter
 v1 = 0; % initializing v_{k-1} (keeps center vector of previous iteration)
-nn = 0; % a counter for # of endmembers in SNPA initalization if avergae initialization goes wrong
-theta = cell(options.num_workers,1); % Theta_i for i=1,...mnum_workers 
-ignore = cell(options.num_workers,1); % ignore_i for i=1,...mnum_workers (ignoring i-th solution or not)
-delta = cell(options.num_workers,1); % delta_i for i=1,...mnum_workers (estimated noise matrix)
-flag = cell(options.num_workers,1); % flag_i for i=1,...mnum_workers (optimization was successful or not)
-z = cell(options.num_workers,1); % z_i for i=1,...mnum_workers
+nn = 0; % a counter for # of endmembers in SNPA initalization if average initialization goes wrong
+theta = cell(options.num_workers,1); % Theta_i for i=1,...num_workers 
+ignore = cell(options.num_workers,1); % ignore_i for i=1,...num_workers (ignoring i-th solution or not)
+delta = cell(options.num_workers,1); % delta_i for i=1,...num_workers (estimated noise matrix)
+flag = cell(options.num_workers,1); % flag_i for i=1,...num_workers (optimization was successful or not)
+z = cell(options.num_workers,1); % z_i for i=1,...num_workers
 for i = 1: options.num_workers
     z{i}=[randn(r-1,r);ones(1,r)]; %initialize z_i
 end
