@@ -19,7 +19,7 @@
 % successful or not
 function [Z_tilde,Theta,Delta,flag] = algorithm2_update_theta(Y,r,lambda0,Z_tilde,options)
 
-cputime0 = cputime; 
+%cputime0 = cputime; 
 if nargin <= 4
     options = [];
 end
@@ -49,22 +49,22 @@ Delta = [];
 H = sparse(p+m+n+m,p+m+n+m);
 H(p+m+1:end-m,p+m+1:end-m)=speye(n);
 while iter < options.maxiter ... 
-        && norm(Z_tilde - Z_pre,'fro')/norm(Z_pre,'fro')>1e-3 ... 
-        && cputime-cputime0 <= options.timelimit 
+        && norm(Z_tilde - Z_pre,'fro')/norm(Z_pre,'fro')>1e-3 %... 
+        %&& cputime-cputime0 <= options.timelimit 
     Z_pre = Z_tilde;
     iter = iter + 1;
-    for i = 1 : r
+    for i = 1 : r %updating each column of Z sequentially
         lambda = lambda0 * det(Z_tilde)^2/det(Z_0)^2; %update lambda
         inv_Z = pinv(Z_tilde); % compute Z^-1
         zz = Z_tilde;
-        zz(:,i)=[];
-        f = inv_Z(i,:); %form vector f
-        f = [f zeros(1,m) zeros(1,n) zeros(1,m)];
-        A = [zeros(n,p) Y' -speye(n) zeros(n,m)]; %Y'* Theta <1
+        zz(:,i)=[]; % taking the i-th (current) column out (for second equality constraint on alpha)
+        f = inv_Z(i,:); %Z^-1(i,:), refer to the paper for the details
+        f = [f zeros(1,m) zeros(1,n) zeros(1,m)]; %optimizaton parameters: [Z, Theta, Delta, alpha]
+        A = [zeros(n,p) Y' -speye(n) zeros(n,m)]; %inequality constraint: Y' * Theta <= 1+ Delta --> Y' * Theta - Delta <= 1
         b = ones(n,1);
-        Aeq1 = [eye(p) -eye(p,r-1) zeros(p,n) zeros(p,m)]; %Z = [Theta; e^T] 
+        Aeq1 = [eye(p) -eye(p,r-1) zeros(p,n) zeros(p,m)]; %equality constraint 1: Z = [Theta; e']
         beq1 = [zeros(m,1);1];
-        Aeq2 = [zeros(m,p) eye(m) zeros(m,n), zz(1:m,:)]; % forcing 0 is in the interior of its convex hull
+        Aeq2 = [zeros(m,p) eye(m) zeros(m,n), zz(1:m,:)]; %equality constraint 2: 0 to be in the interior of estimated Thetas
         beq2 = zeros(m,1);
         opts = optimoptions('quadprog','Display','none'); 
         [Z_tilde_i,~,e,~] = quadprog(lambda*H,-f',A,b,[Aeq1;Aeq2],[beq1;beq2],[-inf*ones(p+m+n,1); 0.01*ones(m,1)],[],[],opts);
@@ -72,7 +72,7 @@ while iter < options.maxiter ...
             Z_tilde = randn(p,r);
             flag = 0;
             return
-        else %update the column i-th of Z matrix
+        else %update i-th column of Z, Theta, Delta and i-th element of alpha
             Z_tilde(:,i) = Z_tilde_i(1:p);
             theta = Z_tilde_i(p+1:p+m);
             Delta(:,i) = Z_tilde_i(p+m+1:end-m);
@@ -82,5 +82,4 @@ while iter < options.maxiter ...
     end
 end
 flag = 1;
-Z = Z_tilde;
 end

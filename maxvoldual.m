@@ -71,8 +71,8 @@ CtX = C'*X;
 O = ones(r-1,1);
 cro = nchoosek(1:r,r-1); % for calculating intersection later
 outeriter = 1;
-% main loop
 West = []; 
+% main loop
 while norm(v-v1,'fro')/norm(v1,'fro') > options.epsilon ...
         && iter < options.maxiter ...
         && toc <= options.timelimit  
@@ -110,9 +110,9 @@ while norm(v-v1,'fro')/norm(v1,'fro') > options.epsilon ...
             [C,~,~]=svds(@afun,[m,n],r-1);
         else
             Y = X - v;
-            [C,~,~]=svds(Y,r-1);
+            [C,~,~]=svds(Y,r-1); %if not sparse, compute svds normally
         end
-        CtX = C'*X;
+        CtX = C'*X; %update CtX for next iterations
         v1 = 0;
     else
         % find intersections (W)
