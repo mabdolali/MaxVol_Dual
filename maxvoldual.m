@@ -69,10 +69,10 @@ for i = 1: options.num_workers
 end
 CtX = C'*X;
 O = ones(r-1,1);
-cro = nchoosek(1:r,r-1); % for each r-1 facets from r facets
+cro = nchoosek(1:r,r-1); % for calculating intersection later
 outeriter = 1;
 % main loop
-West = []; % !!! otherwise could be not assigned
+West = []; 
 while norm(v-v1,'fro')/norm(v1,'fro') > options.epsilon ...
         && iter < options.maxiter ...
         && toc <= options.timelimit  
@@ -83,27 +83,27 @@ while norm(v-v1,'fro')/norm(v1,'fro') > options.epsilon ...
     iter = iter + 1;
     % parallel computation of Z_i for i = 1: num_workers
     parfor i=1:options.num_workers
-        [z{i},theta{i},delta{i},flag{i}] = algorithm2_update_theta(Y,r,lambda,z{i});
-        ignore{i} = ~flag{i} || any(is_correct(normc(theta{i}))<0.01); 
+        [z{i},theta{i},delta{i},flag{i}] = algorithm2_update_theta(Y,r,lambda,z{i}); %solves a QP 
+        ignore{i} = ~flag{i} || any(is_correct(normc(theta{i}))<0.01); % check if optimization was successful
     end
     % select the best candidate till now (maximum dual volume)
     best_theta = []; 
     best = -Inf; 
     for i = 1: options.num_workers
-        if ~ignore{i}
-            vol = (det(z{i}))^2 - lambda*sum(delta{i}(:).^2); % !!! correct formula 
+        if ~ignore{i} %if optimization for i-th solution was successful
+            vol = (det(z{i}))^2 - lambda*sum(delta{i}(:).^2); % evaluate the objective function for i-th candidate
             if vol > best
-                best_theta = theta{i};
+                best_theta = theta{i}; %update the best candidate
                 best = vol;
             end
         else
-            z{i}=[randn(r-1,r);ones(1,r)];
+            z{i}=[randn(r-1,r);ones(1,r)]; % if optimization was unseccessful, change initialization for next iteration
         end
     end
     % if all candidates failed, use alternative initialization
     if isempty(best_theta)
         nn = nn + 1;
-        [J,~] = SNPA(X,nn*r);
+        [J,~] = SNPA(X,nn*r); %estimate endmembers with SNPA
         v = mean(X(:,J),2);
         if issparse(X)
             [m,n]=size(X); %if X is sparse, compute svds implicitly
@@ -117,7 +117,7 @@ while norm(v-v1,'fro')/norm(v1,'fro') > options.epsilon ...
     else
         % find intersections (W)
         W_e = [];
-        for i=1:size(cro,1)
+        for i=1:size(cro,1) %for each r-1 facets compute intersection
             c = cro(i,:);
             U = best_theta(:,c);
             coef = U' \ O;
@@ -129,7 +129,7 @@ while norm(v-v1,'fro')/norm(v1,'fro') > options.epsilon ...
     end
     outeriter = outeriter + 1;
 end
-West = West * MAX;
+West = West * MAX; %re-scale to the original space
 
 function Ax = afun(x, cond)
     % function for implicitly computing svds of X-v*e^T where X is a sparse
