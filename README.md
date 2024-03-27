@@ -5,8 +5,8 @@ This MATLAB code allows one to solve the simplex-structured matrix factorization
 This code solves SSMF via a dual approach, by solving the dual problem
 
 ```math
-\begin{aligned} \max_{Z,\Theta,\Delta} & \quad det(Z)^2 - \lambda ||\Delta||^2 \\
- \text{such that } &  \quad Z = [\Theta; e^\top] \text{ and } Y^\top \Theta <= 1 + \Delta , 
+\begin{aligned} \max_{Z,\Theta,\Delta} & \quad \text{det}(Z)^2 - \lambda ||\Delta||^2 \\
+ \text{such that } &  \quad Z = [\Theta; e^\top] \text{ and } Y^\top \Theta \leq 1 + \Delta , 
 \end{aligned}
 ```
 
