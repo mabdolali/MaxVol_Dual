@@ -1,6 +1,6 @@
 # Maxium Volume Simplex Dual (MV-Dual) 
  
-This MATLAB code allows one to solve the simplex-structured matrix factorization (SSMF) problem: Given an $m$-by-$n$ data matrix $X$ and a factorization rank $r$, it looks for a matrix $W$ with $r$ columns and a column-stochastic matrix $H$ with $r$ (entries in each column are nonnegative and sum to one). 
+This MATLAB code allows one to solve the simplex-structured matrix factorization (SSMF) problem: Given a data matrix $X \in \mathbb{R}^{m \times n}$ and a factorization rank $r$, it looks for a matrix $W$ with $r$ columns and a column-stochastic matrix $H$ with $r$ (entries in each column are nonnegative and sum to one). 
 
 This code solves SSMF via a dual approach, by solving the dual problem
 
@@ -16,6 +16,6 @@ where
 - $e$ is the vector of all ones, and 
 - $\lambda$ is a penalty parameter balancing volume and noise.
 
-The columns of the variable $\Theta$ contains an approximation of the facets of the convex hull of the volumns of $W$, and $\Delta$ models the noise.  
+The matix $Y$ is a low-dimensional projection of $X$, after translation around the origin. The columns of the variable $\Theta$ contains an approximation of the facets of the convex hull of the volumns of $W$, and $\Delta$ models the noise.  
 
 See the paper "Dual Simplex Volume Maximization for Simplex-Structured Matrix Factorization", by M. Abdolali, G. Barbarino and N. Gillis, 2024. 
