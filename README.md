@@ -16,6 +16,6 @@ where
 - $e$ is the vector of all ones, and 
 - $\lambda$ is a penalty parameter balancing volume and noise.
 
-The matix $Y$ is a low-dimensional projection of $X$, after translation around the origin. The columns of the variable $\Theta$ contains an approximation of the facets of the convex hull of the columns of $W$; in other words, the convex hull of the columns of $\Theta$ is the polar of the convex hull of the columns of $W$. The matrix $\Delta$ models the noise.  
+The matix $Y$ is a low-dimensional projection of $X$, after translation around the origin. The columns of the variable $\Theta$ contains an approximation of the facets of the convex hull of the columns of $W$; in other words, the convex hull of the columns of $\Theta$ represents the polar of the convex hull of the columns of $W$. The matrix $\Delta$ models the noise.  
 
 See the paper "Dual Simplex Volume Maximization for Simplex-Structured Matrix Factorization", by M. Abdolali, G. Barbarino and N. Gillis, 2024. 
