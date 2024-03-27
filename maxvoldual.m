@@ -1,8 +1,24 @@
-%   This code solves the maxvol-dual problem
+%   function [v1, West, best_theta, iter, Y, C] = maxvoldual(X,r,lambda,options)
+% 
+%    This code solves simplex-structured matrix factorization (SSMF) 
+%    via a dual approach. Given the input matrix, X, and a factorization
+%    rank r, it looks for W and H such that WH approximates X and H is column 
+%    stochastic. 
+%    To do so, it first reduces the dimension of the problem: 
+%        Y = C' (X - v e') where e is the vector of all ones, v is in conv(X)
+%                                C' contains the first r singular vectors of 
+%                                X - v e'. 
+% 
+%    Then it solves the maximum-volume dual problems: 
 %
-%        max_{Z,Theta,Delta} det(Z)^2 - lambda ||Delta||^2
-%                      such that Z = [Theta; e'] and Y' Theta <= 1 + Delta
+%        max_{Z,Theta,Delta}  det(Z)^2 - lambda ||Delta||^2
+%                  such that  Z = [Theta; e'] and Y' Theta <= 1 + Delta. 
 %
+%    where Theta represents the polar of conv(W) whose volumns is maximized. 
+% 
+% See the paper "Dual Simplex Volume Maximization for Simplex-Structured 
+% Matrix Factorization", by M. Abdolali, G. Barbarino and N. Gillis, 2024.
+% 
 % ****** Input ******
 % X      :  the input matrix
 % r      :  the rank of the sought approximation
@@ -18,7 +34,6 @@
 %             -default = 300.
 % 
 % ****** Output ******
-%
 % v1          :    estimated center vector
 % West        :    estimated W
 % best_theta  :    final Theta at the convergence with maximum dual volume
@@ -27,8 +42,7 @@
 % C           :    projection matrix
 
 function [v1, West, best_theta, iter, Y, C] = maxvoldual(X,r,lambda,options)
-%cputime0 = cputime; !!! 
-tic; % !!! 
+tic; 
 if nargin <= 3
     options = [];
 end
