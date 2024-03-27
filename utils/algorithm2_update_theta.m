@@ -8,7 +8,8 @@
 % r      :  the rank of the sought approximation
 % lambda0:  the regularization parameter
 % Z_tilde: initial Z matrix
-% options.maxiter & timelimit
+% options.maxiter 
+% 
 % ****** Output ******
 % 
 % Z_tilde     :    estimated Z matrix
@@ -17,9 +18,9 @@
 % Delta       :    estimated noise matrix
 % flag        : a boolean flag which indicates whether the optimization was
 % successful or not
+
 function [Z_tilde,Theta,Delta,flag] = algorithm2_update_theta(Y,r,lambda0,Z_tilde,options)
 
-%cputime0 = cputime; 
 if nargin <= 4
     options = [];
 end
@@ -49,8 +50,7 @@ Delta = [];
 H = sparse(p+m+n+m,p+m+n+m);
 H(p+m+1:end-m,p+m+1:end-m)=speye(n);
 while iter < options.maxiter ... 
-        && norm(Z_tilde - Z_pre,'fro')/norm(Z_pre,'fro')>1e-3 %... 
-        %&& cputime-cputime0 <= options.timelimit 
+        && norm(Z_tilde - Z_pre,'fro')/norm(Z_pre,'fro')>1e-3
     Z_pre = Z_tilde;
     iter = iter + 1;
     for i = 1 : r %updating each column of Z sequentially
