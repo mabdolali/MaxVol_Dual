@@ -14,7 +14,7 @@
 %        max_{Z,Theta,Delta}  det(Z)^2 - lambda ||Delta||^2
 %                  such that  Z = [Theta; e'] and Y' Theta <= 1 + Delta. 
 %
-%    where Theta represents the polar of conv(W) whose volumns is maximized. 
+%    where Theta represents the polar of conv(W) whose volumne is maximized. 
 % 
 % See the paper "Dual Simplex Volume Maximization for Simplex-Structured 
 % Matrix Factorization", by M. Abdolali, G. Barbarino and N. Gillis, 2024.
