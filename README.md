@@ -18,4 +18,5 @@ where
 
 The matix $Y$ is a low-dimensional projection of $X$, after translation around the origin. The columns of the variable $\Theta$ contains an approximation of the facets of the convex hull of the columns of $W$; in other words, the convex hull of the columns of $\Theta$ represents the polar of the convex hull of the columns of $W$. The matrix $\Delta$ models the noise.  
 
-See the paper "Dual Simplex Volume Maximization for Simplex-Structured Matrix Factorization", by M. Abdolali, G. Barbarino and N. Gillis, 2024. 
+See the paper "Dual Simplex Volume Maximization for Simplex-Structured Matrix Factorization", M. Abdolali, G. Barbarino, and N. Gillis, SIAM J. on Imaging Sciences 17 (4), pp. 2362-2391, 2024. 
+See https://epubs.siam.org/doi/10.1137/24M1650600 and https://arxiv.org/abs/2410.06310
